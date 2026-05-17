@@ -102,7 +102,7 @@ function parseTestResults (filePath, framework) {
     return (
       data.testResults?.flatMap((suite) =>
         suite.assertionResults
-          ?.filter((t) => t.status === 'fail')
+          ?.filter((t) => t.status === 'failed')
           .map((t) => ({
             id: crypto.randomUUID(),
             name: t.fullName,
