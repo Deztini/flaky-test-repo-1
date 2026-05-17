@@ -23,9 +23,11 @@ async function main () {
   await runTests(framework)
 
   const filePath = fileMap[framework]
-  const raw = fs.readFileSync(filePath, 'utf-8')
-  console.log('Raw JSON (first 500 chars):', raw.slice(0, 500))
-  const data = JSON.parse(raw)
+ let raw = fs.readFileSync(filePath, 'utf-8')
+const jsonStart = raw.indexOf('{')
+if (jsonStart > 0) raw = raw.slice(jsonStart)
+console.log('Raw JSON (first 500 chars):', raw.slice(0, 500))
+const data = JSON.parse(raw)
   console.log('Top-level keys:', Object.keys(data))
   console.log('suites length:', data.suites?.length)
   console.log('stats:', JSON.stringify(data.stats))
