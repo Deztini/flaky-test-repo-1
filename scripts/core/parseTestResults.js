@@ -6,10 +6,10 @@ function readJSON(filePath) {
     let raw = fs.readFileSync(filePath, 'utf-8')
     
     const jsonStart = raw.indexOf('{')
-    if (jsonStart > 0) {
-      raw = raw.slice(jsonStart)
+    const jsonEnd = raw.lastIndexOf('}')
+    if (jsonStart > -1 && jsonEnd > -1) {
+      raw = raw.slice(jsonStart, jsonEnd + 1)
     }
-    
     return JSON.parse(raw)
   } catch {
     console.log(`Failed to read/parse ${filePath}`)
