@@ -22,22 +22,25 @@ function buildRerunCommand (test, framework) {
   }
 }
 
-function isFailure (output) {
-  return /fail|FAIL|failed|error/i.test(output)
+function isFailure (cmd) {
+  try {
+    const { execSync } = require('child_process')
+    execSync(cmd, { stdio: 'pipe' })
+    return false 
+  } catch {
+    return true 
+  }
 }
-
 async function rerunTests (tests, framework) {
   const results = []
 
   for (const test of tests) {
-    let failures = 0
+   let failures = 0
     const runs = 5
     const cmd = buildRerunCommand(test, framework)
 
     for (let i = 0; i < runs; i++) {
-      const output = execCommand(cmd)
-
-      if (isFailure(output)) failures++
+      if (isFailure(cmd)) failures++
     }
 
     results.push({
