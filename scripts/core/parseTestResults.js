@@ -1,9 +1,15 @@
 const fs = require('fs')
 const crypto = require('crypto')
 
-function readJSON (filePath) {
+function readJSON(filePath) {
   try {
-    const raw = fs.readFileSync(filePath, 'utf-8')
+    let raw = fs.readFileSync(filePath, 'utf-8')
+    
+    const jsonStart = raw.indexOf('{')
+    if (jsonStart > 0) {
+      raw = raw.slice(jsonStart)
+    }
+    
     return JSON.parse(raw)
   } catch {
     console.log(`Failed to read/parse ${filePath}`)
