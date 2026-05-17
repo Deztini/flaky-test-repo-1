@@ -1,0 +1,11 @@
+{
+  "name": "flaky-test-repo",
+  "version": "1.0.0",
+  "description": "Minimal repo for testing FlakeyRadar - async, network, and flaky tests",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0"
+  }
+}
