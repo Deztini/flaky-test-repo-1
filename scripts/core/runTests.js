@@ -22,7 +22,7 @@ function runTests (framework) {
     }
     case 'vitest': {
       return execCommand(
-        'npx vitest run --reporter=json > vitest-results.json'
+        'npx vitest run --reporter=json --outputFile=vitest-results.json'
       )
     }
     case 'cypress': {
