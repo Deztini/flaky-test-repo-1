@@ -31,25 +31,9 @@ test('Promise.all resolves all values', async () => {
   expect(results).toEqual([1, 2, 3])
 })
 
-// ─── Flaky async tests ────────────────────────────────────────────────
+// ─── Truly flaky async tests ──────────────────────────────────────────
 
-test('flaky - async timing race (fails ~40% of the time)', async () => {
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms))
-
-  // Simulates a race condition: sometimes task2 finishes before task1
-  let winner = null
-  const task1 = delay(Math.random() * 100).then(() => {
-    if (!winner) winner = 'task1'
-  })
-  const task2 = delay(Math.random() * 100).then(() => {
-    if (!winner) winner = 'task2'
-  })
-
-  await Promise.all([task1, task2])
-  expect(winner).toBe('task1') // flaky — task2 often wins
-})
-
-test('flaky - async retry simulation (fails ~50% of the time)', async () => {
+test('flaky - async random failure (fails ~50% of the time)', async () => {
   async function unstableOperation() {
     await new Promise((res) => setTimeout(res, 50))
     if (Math.random() < 0.5) throw new Error('Transient failure')
@@ -60,22 +44,21 @@ test('flaky - async retry simulation (fails ~50% of the time)', async () => {
   expect(result).toBe('success')
 })
 
-test('flaky - async queue order (fails ~30% of the time)', async () => {
-  const results = []
-
-  async function push(val, delay) {
-    await new Promise((res) => setTimeout(res, delay))
-    results.push(val)
+test('flaky - async random value check (fails ~40% of the time)', async () => {
+  async function fetchRandomScore() {
+    await new Promise((res) => setTimeout(res, 30))
+    return Math.floor(Math.random() * 10)
   }
 
-  // Expects items in order but timing makes it non-deterministic
-  await Promise.all([
-    push('a', Math.random() * 80),
-    push('b', Math.random() * 80),
-    push('c', Math.random() * 80),
-  ])
+  const score = await fetchRandomScore()
+  expect(score).toBeLessThan(6)
+})
 
-  expect(results[0]).toBe('a') // flaky — order depends on random delays
+test('flaky - async timeout threshold (fails ~40% of the time)', async () => {
+  const start = Date.now()
+  await new Promise((res) => setTimeout(res, Math.random() * 200))
+  const duration = Date.now() - start
+  expect(duration).toBeLessThan(120)
 })
 
 // ─── Always failing async tests ───────────────────────────────────────
