@@ -6,7 +6,7 @@ function buildRerunCommand (test, framework) {
       return `npx jest -t "${test.name}"`
 
     case 'vitest':
-      return `npx vitest run -t "${test.name.trim()}"`
+      return `npx vitest run --reporter=verbose -t "${test.name.trim()}"`
 
     case 'mocha':
       return `npx mocha --grep "${test.name}"`
