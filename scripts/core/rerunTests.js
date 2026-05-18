@@ -6,7 +6,8 @@ function buildRerunCommand (test, framework) {
       return `npx jest -t "${test.name}"`
 
     case 'vitest':
-      return `npx vitest run --reporter=verbose -t "${test.name.trim()}"`
+      const escapedName = test.name.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      return `npx vitest run --reporter=verbose -t "${escapedName}"`
 
     case 'mocha':
       return `npx mocha --grep "${test.name}"`
