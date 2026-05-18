@@ -6,7 +6,7 @@ function buildRerunCommand (test, framework) {
       return `npx jest -t "${test.name}"`
 
     case 'vitest':
-      return `npx vitest run -t "${test.name}"`
+      return `npx vitest run -t "${test.name.trim()}"`
 
     case 'mocha':
       return `npx mocha --grep "${test.name}"`
@@ -40,7 +40,9 @@ async function rerunTests (tests, framework) {
     const cmd = buildRerunCommand(test, framework)
 
     for (let i = 0; i < runs; i++) {
-      if (isFailure(cmd)) failures++
+      const failed = isFailure(cmd)
+      console.log(`Run ${i + 1} for "${test.name.trim()}": ${failed ? 'FAILED' : 'PASSED'}`)
+       if (failed) failures++
     }
 
     results.push({
