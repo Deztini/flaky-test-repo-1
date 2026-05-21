@@ -37,7 +37,7 @@ async function rerunTests (tests, framework) {
 
   for (const test of tests) {
    let failures = 0
-    const runs = 5
+    const runs = 10
     const cmd = buildRerunCommand(test, framework)
 
     for (let i = 0; i < runs; i++) {
@@ -53,7 +53,7 @@ async function rerunTests (tests, framework) {
       file: test.file,
       failRate: failures / runs,
       runs,
-      isFlaky: failures > 0 && failures < runs,
+      isFlaky: failures >= 1 && failures <= runs - 1,
     })
   }
 
